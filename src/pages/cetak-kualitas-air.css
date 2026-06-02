@@ -212,10 +212,6 @@ body {
         margin: 1cm;
     }
 
-    body * {
-        visibility: hidden;
-    }
-
     html, body {
         width: 100%;
         height: auto !important;
@@ -225,24 +221,32 @@ body {
         overflow: visible !important;
     }
 
-    /* Target modal utama */
-    #detailModal, 
-    #detailModal * {
-        visibility: visible !important;
+    /* Sembunyikan semua body element via display (bukan visibility) */
+    body > * {
+        display: none !important;
+    }
+
+    /* Tampilkan main, page container, dan modal */
+    main, #pg-database-kualitas-air, #detailModal {
+        display: block !important;
+    }
+
+    /* Dalam page container, sembunyikan semua kecuali modal */
+    #pg-database-kualitas-air > :not(#detailModal) {
+        display: none !important;
     }
 
     #detailModal {
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
+        position: static !important;
         width: 100% !important;
-        height: 100% !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         background-color: white !important;
         z-index: 9999;
-        display: block !important;
         overflow: visible !important;
+        box-shadow: none !important;
+        border: none !important;
     }
 
     /* Sembunyikan UI Modal */
@@ -255,29 +259,26 @@ body {
     /* Reset wrapper modal */
     .modal-content, 
     .modal-body {
+        display: block !important;
         border: none !important;
         box-shadow: none !important;
         width: 100% !important;
-        height: 100% !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         position: static !important;
         overflow: visible !important;
     }
 
-    /* PERBAIKAN UTAMA: Hapus position:absolute dan biarkan container mengikuti flow */
+    /* Container laporan — biarkan flow alami antar halaman */
     #laporan-cetak-container {
         width: 100% !important;
-        min-height: 100% !important;
+        height: auto !important;
         padding: 0 !important;
         margin: 0 !important;
-        position: static !important;
-        left: auto !important;
-        top: auto !important;
         box-shadow: none !important;
         border: none !important;
         overflow: visible !important;
-        page-break-inside: avoid;
     }
 
     /* Warna Tinta */
