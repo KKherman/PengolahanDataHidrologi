@@ -212,41 +212,71 @@ body {
         margin: 1cm;
     }
 
-    html, body {
-        width: 100%;
+    html {
         height: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background-color: white !important;
         overflow: visible !important;
     }
 
-    /* Sembunyikan semua body element via display (bukan visibility) */
-    body > * {
+    body {
+        display: block !important;
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        overflow: visible !important;
+    }
+
+    /* Lepaskan constraint layout dari CSS screen */
+    main {
+        display: block !important;
+        height: auto !important;
+        overflow: visible !important;
+        position: static !important;
+        flex: none !important;
+    }
+
+    #app-content {
+        display: block !important;
+        height: auto !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        flex: none !important;
+    }
+
+    /* Sembunyikan sidebar & chrome */
+    body > :not(main) {
         display: none !important;
     }
 
-    /* Tampilkan main, page container, dan modal */
-    main, #pg-database-kualitas-air, #detailModal {
-        display: block !important;
+    /* Dalam main, sembunyikan halaman lain */
+    #app-content > :not(#pg-database-kualitas-air) {
+        display: none !important;
     }
 
-    /* Dalam page container, sembunyikan semua kecuali modal */
+    /* Dalam halaman database, sembunyikan semua kecuali modal */
     #pg-database-kualitas-air > :not(#detailModal) {
         display: none !important;
     }
 
+    /* Reset modal — lepaskan fixed/flex/centering */
     #detailModal {
+        display: block !important;
         position: static !important;
-        width: 100% !important;
         height: auto !important;
+        width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
-        background-color: white !important;
-        z-index: 9999;
+        background: white !important;
         overflow: visible !important;
         box-shadow: none !important;
         border: none !important;
+        z-index: auto !important;
+        top: auto !important;
+        left: auto !important;
+        align-items: normal !important;
+        justify-content: normal !important;
+        backdrop-filter: none !important;
     }
 
     /* Sembunyikan UI Modal */
@@ -261,13 +291,18 @@ body {
     .modal-body {
         display: block !important;
         border: none !important;
+        border-radius: 0 !important;
         box-shadow: none !important;
         width: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
         height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         position: static !important;
         overflow: visible !important;
+        flex: none !important;
+        background: transparent !important;
     }
 
     /* Container laporan — biarkan flow alami antar halaman */
