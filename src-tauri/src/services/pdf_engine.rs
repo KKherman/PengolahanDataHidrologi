@@ -1,10 +1,17 @@
 use crate::models::kualitas_air::KualitasAirRecord;
+use crate::services;
 use regex::Regex;
 
 pub fn parse_pdf(file_path: String) -> Result<KualitasAirRecord, String> {
     println!("📂 Membaca PDF dari: {}", file_path);
     let content = pdf_extract::extract_text(&file_path)
         .map_err(|e| format!("Gagal membaca PDF: {}", e))?;
+
+    // Jika pdf-extract gagal menghasilkan teks yang berarti, fallback ke OCR
+    if content.trim().len() < 20 {
+        println!("⚠️ pdf-extract tidak menghasilkan teks berarti, fallback ke OCR...");
+        return services::ocr_engine::ocr_pdf(&file_path);
+    }
 
     println!("\n=== MULAI EKSTRAKSI (GLOBAL SEARCH PATTERN) ===");
 
@@ -86,8 +93,8 @@ pub fn parse_pdf(file_path: String) -> Result<KualitasAirRecord, String> {
         else if text.contains("Nitrit") { data.nitrit = extract_sni_value(text, "Nitrit"); }
         else if text.contains("COD") { data.cod = extract_sni_value(text, "COD"); }
         else if text.contains("BOD") { data.bod = extract_sni_value(text, "BOD"); }
-        else if text.contains("Detergen") || text.contains("Deterjen") { data.deterjen = extract_sni_value(text, "Deterjen"); }
-        else if text.contains("Minyak") && text.contains("lemak") { data.minyak_dan_lemak = extract_sni_value(text, "Minyak Lemak"); }
+        else if text.contains("Detergen") || text.contains("Deterjen") { data.deterjen = extract_sni_value(text, "Detergen"); }
+        else if text.contains("Minyak") && text.contains("lemak") { data.minyak_dan_lemak = extract_sni_value(text, "Minyak"); }
         else if text.contains("Fenol") { data.fenol = extract_sni_value(text, "Fenol"); }
         else if text.contains("Sianida") { data.sianida = extract_sni_value(text, "Sianida"); }
         else if text.contains("Fluorida") { data.fluorida = extract_sni_value(text, "Fluorida"); }
@@ -133,31 +140,51 @@ fn convert_indo_date(raw_date: &str) -> Option<String> {
     Some(format!("{}-{}-{}", day, month_num, year))
 }
 
-fn extract_sni_value(raw_line: &str, param_name: &str) -> Option<f64> {
-    let split_idx = raw_line.to_uppercase().find("SNI");
-    match split_idx {
-        Some(idx) => {
-            let left_part = &raw_line[..idx].trim();
-            let parts: Vec<&str> = left_part.split_whitespace().collect();
-            if let Some(last_word) = parts.last() {
-                let mut is_less_than = last_word.contains('<');
-                if !is_less_than && parts.len() >= 2 {
-                    if let Some(prev_word) = parts.get(parts.len() - 2) {
-                        if prev_word.contains('<') { is_less_than = true; }
-                    }
-                }
-                let clean_str = last_word.replace(',', ".").replace("<", "").replace(">", "");
-                match clean_str.parse::<f64>() {
-                    Ok(mut val) => {
-                        if is_less_than { val = val * 0.99; }
-                        println!("[OK] {}: {}", param_name, val);
-                        return Some(val);
-                    },
-                    Err(_) => {}
-                }
-            }
-        },
-        None => {}
+fn extract_value_before_sni(raw_line: &str, param_name: &str) -> Option<f64> {
+    let sni_idx = raw_line.to_uppercase().find("SNI")?;
+    let before_sni = &raw_line[..sni_idx];
+
+    let kw_start = before_sni.to_lowercase()
+        .find(&param_name.to_lowercase())?;
+    let after_kw = &before_sni[kw_start + param_name.len()..];
+
+    let re_dec = Regex::new(r"(\d+)[,.](\d+)").unwrap();
+    let known_units = ["mL", "mg", "L", "mg/L", "MPN", "Pt", "Co", "Unit"];
+
+    if let Some(val) = re_dec.captures_iter(after_kw)
+        .filter_map(|cap| {
+            let m = cap.get(0)?;
+            let end = m.end();
+            let rest = after_kw[end..].trim_start();
+            let next_word = rest.split_whitespace().next().unwrap_or("");
+            if known_units.contains(&next_word) { return None; }
+            let s = m.as_str().replace(',', ".");
+            s.parse::<f64>().ok()
+        })
+        .filter(|&v| v > 0.0 && v < 1_000_000.0)
+        .next()
+    {
+        return Some(val);
     }
-    None
+
+    let re_int = Regex::new(r"\b(\d+)\b").unwrap();
+    let result = re_int.captures_iter(after_kw)
+        .filter_map(|cap| {
+            let m = cap.get(1)?;
+            let end = m.end();
+            let rest = after_kw[end..].trim_start();
+            let next_word = rest.split_whitespace().next().unwrap_or("");
+            if known_units.contains(&next_word) { return None; }
+            let s = m.as_str();
+            s.parse::<f64>().ok()
+        })
+        .filter(|&v| v > 0.0 && v < 1_000_000.0)
+        .next();
+    result
+}
+
+fn extract_sni_value(raw_line: &str, param_name: &str) -> Option<f64> {
+    let val = extract_value_before_sni(raw_line, param_name)?;
+    println!("[OK] {}: {}", param_name, val);
+    Some(val)
 }
