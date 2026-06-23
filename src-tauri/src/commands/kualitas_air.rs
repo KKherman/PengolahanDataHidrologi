@@ -227,3 +227,46 @@ pub async fn export_kualitas_air_csv
         }
     }
 }
+
+// --- COMMAND 7: EXPORT EXCEL SIHKA (per record) ---
+#[command]
+pub async fn export_excel_sihka(
+    app: AppHandle,
+    pool: State<'_, SqlitePool>,
+    record_id: i64,
+) -> Result<String, String> {
+    // 1. Ambil 1 record dari DB
+    let sql = "SELECT * FROM kualitas_air WHERE id = ?";
+    let record = sqlx::query_as::<_, KualitasAirRecord>(sql)
+        .bind(record_id)
+        .fetch_optional(pool.inner())
+        .await
+        .map_err(|e| format!("Gagal mengambil data dari database: {}", e))?
+        .ok_or_else(|| format!("Data dengan ID {} tidak ditemukan", record_id))?;
+
+    // 2. Buat default filename
+    let pos_slug = record.nama_pos.as_deref()
+        .unwrap_or("unknown")
+        .replace([' ', '/', '\\', ':'], "_");
+    let tgl = record.tanggal_sampling.as_deref()
+        .unwrap_or("nodate");
+    let default_name = format!("SIHKA_{}_{}.xlsx", pos_slug, tgl);
+
+    // 3. Dialog save
+    let file_path = app.dialog()
+        .file()
+        .add_filter("Excel Files", &["xlsx"])
+        .set_file_name(&default_name)
+        .blocking_save_file();
+
+    match file_path {
+        Some(path) => {
+            let path_str = path.to_string();
+            services::sihka_service::export_sihka_one(&record, &path_str)?;
+            Ok(format!("✅ Export Excel SIHKA berhasil: {}", default_name))
+        },
+        None => {
+            Err("Export dibatalkan pengguna".to_string())
+        }
+    }
+}

@@ -34,7 +34,8 @@ pub fn run() {
             commands::kualitas_air::import_pdf,
             commands::kualitas_air::get_all_kualitas_air,
             commands::kualitas_air::delete_kualitas_air,
-            commands::kualitas_air::export_kualitas_air_csv
+            commands::kualitas_air::export_kualitas_air_csv,
+            commands::kualitas_air::export_excel_sihka
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

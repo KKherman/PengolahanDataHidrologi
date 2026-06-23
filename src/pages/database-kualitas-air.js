@@ -7,6 +7,9 @@ const { invoke } = window.__TAURI__.core;
 // Import modul cetak yang baru
 import { initPrintSystem, populatePrintTemplate, executePrint } from './cetak-kualitas-air.js';
 
+// State untuk record yang sedang dibuka di modal
+let currentPrintRecordId = null;
+
 // ============================================
 // MAIN INITIALIZATION
 // ============================================
@@ -37,6 +40,7 @@ function setupBasicEventListeners() {
         });
     }
     
+    
     // 3. Navigation Buttons
     const navToInput = () => {
         const navKualitasAir = document.getElementById('nav-kualitas-air');
@@ -64,7 +68,16 @@ function setupBasicEventListeners() {
     if (btnPrintPDF) {
         btnPrintPDF.addEventListener('click', () => {
             console.log("🖨️ User requested print...");
-            executePrint(); // Panggil fungsi dari modul cetak
+            executePrint();
+        });
+    }
+    
+    // 6. EXPORT EXCEL SIHKA (Action di dalam Modal, per record)
+    const btnExportExcelSIHKA = document.getElementById('btnExportExcelSIHKA');
+    if (btnExportExcelSIHKA) {
+        btnExportExcelSIHKA.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            await handleExportExcelSIHKA();
         });
     }
 }
@@ -184,6 +197,9 @@ function createCardElement(record, index) {
 function openPrintPreview(record) {
     const modal = document.getElementById('detailModal');
     
+    // Simpan ID record yang sedang dilihat untuk export
+    currentPrintRecordId = record.id;
+    
     // Panggil fungsi dari modul cetak untuk mengisi data
     populatePrintTemplate(record);
 
@@ -294,6 +310,22 @@ async function handleBulkExport() {
         alert("✅ Export Berhasil:\n" + result);
     } catch (error) {
         if (!String(error).includes("dibatalkan")) alert("❌ Gagal Export: " + error);
+    } finally {
+        document.body.style.cursor = 'default';
+    }
+}
+
+async function handleExportExcelSIHKA() {
+    if (!currentPrintRecordId) {
+        alert("❌ Tidak ada record yang dipilih untuk diexport.");
+        return;
+    }
+    try {
+        document.body.style.cursor = 'wait';
+        const result = await invoke('export_excel_sihka', { recordId: currentPrintRecordId });
+        alert("✅ " + result);
+    } catch (error) {
+        if (!String(error).includes("dibatalkan")) alert("❌ Gagal Export Excel SIHKA: " + error);
     } finally {
         document.body.style.cursor = 'default';
     }
