@@ -5,3 +5,5 @@ pub mod pdf_engine;
 pub mod csv_service;
 pub mod ocr_engine;
 pub mod sihka_service;
+pub mod gemini_service;
+pub mod laporan_service;

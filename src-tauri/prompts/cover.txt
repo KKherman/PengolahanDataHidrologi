@@ -1,0 +1,1 @@
+Buat halaman Cover untuk laporan uji sampel kualitas air TA {{tahun}} periode {{bulan}} putaran ke-{{putaran}} di lingkungan Unit HKA -- BWS Sulawesi IV Kendari. Gunakan bahasa Indonesia formal.

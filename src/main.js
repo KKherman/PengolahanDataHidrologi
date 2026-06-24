@@ -1,11 +1,13 @@
 // Import fungsi inisialisasi dari modul halaman
 import { initKualitasAir } from './pages/kualitas-air.js';
 import { initDatabaseKualitasAir } from './pages/database-kualitas-air.js';
+import { initLaporanUjiSampel } from './pages/laporan-uji-sampel.js';
 
 // Mapping: ID Halaman -> Fungsi Init JS-nya
 const pageScripts = {
     'kualitas-air': initKualitasAir,
     'database-kualitas-air': initDatabaseKualitasAir,
+    'laporan-uji-sampel': initLaporanUjiSampel,
     // 'dashboard': initDashboard, // Nanti jika sudah ada
 };
 
@@ -46,6 +48,9 @@ async function loadPage(pageName) {
         contentDiv.innerHTML = `<div class="error-msg"><h3>Gagal memuat halaman</h3><p>${error.message}</p></div>`;
     }
 }
+
+// Export loadPage untuk digunakan dari modul lain
+window.loadPage = loadPage;
 
 // Event Listener saat aplikasi siap
 window.addEventListener("DOMContentLoaded", () => {

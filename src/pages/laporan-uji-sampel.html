@@ -1,0 +1,260 @@
+<div id="pg-laporan-uji-sampel" class="fade-in">
+    <div id="laporanHeader">
+        <h2>BUAT LAPORAN UJI SAMPEL KUALITAS AIR</h2>
+        <p class="subtitle">Generate laporan otomatis dengan AI dan export ke Word / PDF</p>
+    </div>
+
+    <!-- API Key Banner (hidden when key exists) -->
+    <div id="apiKeyBanner" class="api-key-banner">
+        <div class="api-key-banner-content">
+            <i class="fas fa-key"></i>
+            <h3>Masukkan API Key Gemini</h3>
+            <p>Fitur ini memerlukan API Key Google Gemini untuk generate konten. Dapatkan gratis di <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></p>
+            <div class="api-key-input-group">
+                <input type="text" id="apiKeyInput" placeholder="Paste API Key Anda di sini..." />
+                <button id="btnSaveApiKey" class="btn-main">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+            <p id="apiKeyStatus" class="api-key-status"></p>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden until API key is set) -->
+    <div id="laporanContent" style="display:none;">
+
+    <!-- Selection Panel -->
+    <div class="laporan-selector">
+        <div class="selector-group">
+            <label><i class="fas fa-calendar-year"></i> Tahun</label>
+            <select id="laporanTahun"><option value="">-- Pilih Tahun --</option></select>
+        </div>
+        <div class="selector-group">
+            <label><i class="fas fa-calendar-alt"></i> Bulan</label>
+            <select id="laporanBulan">
+                <option value="">-- Pilih Bulan --</option>
+                <option value="Januari">Januari</option>
+                <option value="Februari">Februari</option>
+                <option value="Maret">Maret</option>
+                <option value="April">April</option>
+                <option value="Mei">Mei</option>
+                <option value="Juni">Juni</option>
+                <option value="Juli">Juli</option>
+                <option value="Agustus">Agustus</option>
+                <option value="September">September</option>
+                <option value="Oktober">Oktober</option>
+                <option value="November">November</option>
+                <option value="Desember">Desember</option>
+            </select>
+        </div>
+        <div class="selector-group">
+            <label><i class="fas fa-redo"></i> Putaran</label>
+            <select id="laporanPutaran">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </div>
+        <div class="selector-group selector-action">
+            <button id="btnLoadLaporanData" class="btn-main">
+                <i class="fas fa-search"></i> Muat Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Info Bar -->
+    <div id="laporanInfoBar" class="laporan-info-bar" style="display:none;">
+        <i class="fas fa-info-circle"></i>
+        <span id="laporanInfoText">0 pos sampling terdeteksi</span>
+    </div>
+
+    <!-- Section Cards -->
+    <div id="laporanCards" class="laporan-cards" style="display:none;">
+        <!-- COVER -->
+        <div class="laporan-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-badge">1</span>
+                    <h3>Cover</h3>
+                </div>
+                <button class="btn-ai-generate" data-section="cover">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate dengan AI
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="card-loading" style="display:none;">
+                    <i class="fas fa-spinner fa-spin"></i> AI sedang menulis...
+                </div>
+                <textarea class="card-textarea" data-section="cover" placeholder="Klik 'Generate dengan AI' untuk membuat Cover..."></textarea>
+            </div>
+        </div>
+
+        <!-- KATA PENGANTAR -->
+        <div class="laporan-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-badge">2</span>
+                    <h3>Kata Pengantar</h3>
+                </div>
+                <button class="btn-ai-generate" data-section="kata_pengantar">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate dengan AI
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="card-loading" style="display:none;">
+                    <i class="fas fa-spinner fa-spin"></i> AI sedang menulis...
+                </div>
+                <textarea class="card-textarea" data-section="kata_pengantar" placeholder="Klik 'Generate dengan AI' untuk membuat Kata Pengantar..."></textarea>
+            </div>
+        </div>
+
+        <!-- BAB I.1 -->
+        <div class="laporan-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-badge">3</span>
+                    <h3>BAB I.1 - Latar Belakang</h3>
+                </div>
+                <button class="btn-ai-generate" data-section="bab1_1">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate dengan AI
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="card-loading" style="display:none;">
+                    <i class="fas fa-spinner fa-spin"></i> AI sedang menulis...
+                </div>
+                <textarea class="card-textarea" data-section="bab1_1" placeholder="Klik 'Generate dengan AI' untuk membuat Latar Belakang..."></textarea>
+            </div>
+        </div>
+
+        <!-- BAB I.2 -->
+        <div class="laporan-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-badge">4</span>
+                    <h3>BAB I.2 - Maksud dan Tujuan</h3>
+                </div>
+                <button class="btn-ai-generate" data-section="bab1_2">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate dengan AI
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="card-loading" style="display:none;">
+                    <i class="fas fa-spinner fa-spin"></i> AI sedang menulis...
+                </div>
+                <textarea class="card-textarea" data-section="bab1_2" placeholder="Klik 'Generate dengan AI' untuk membuat Maksud dan Tujuan..."></textarea>
+            </div>
+        </div>
+
+        <!-- BAB II.1 -->
+        <div class="laporan-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-badge">5</span>
+                    <h3>BAB II.1 - Waktu dan Tempat</h3>
+                </div>
+                <button class="btn-ai-generate" data-section="bab2_1">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate dengan AI
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="card-loading" style="display:none;">
+                    <i class="fas fa-spinner fa-spin"></i> AI sedang menulis...
+                </div>
+                <textarea class="card-textarea" data-section="bab2_1" placeholder="Klik 'Generate dengan AI' untuk membuat Waktu dan Tempat..."></textarea>
+            </div>
+        </div>
+
+        <!-- BAB II.2 -->
+        <div class="laporan-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-badge">6</span>
+                    <h3>BAB II.2 - Parameter yang Diuji</h3>
+                </div>
+                <button class="btn-ai-generate" data-section="bab2_2">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate dengan AI
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="card-loading" style="display:none;">
+                    <i class="fas fa-spinner fa-spin"></i> AI sedang menulis...
+                </div>
+                <textarea class="card-textarea" data-section="bab2_2" placeholder="Klik 'Generate dengan AI' untuk membuat Parameter yang Diuji..."></textarea>
+            </div>
+        </div>
+
+        <!-- BAB II.3 -->
+        <div class="laporan-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-badge">7</span>
+                    <h3>BAB II.3 - Alat dan Bahan</h3>
+                </div>
+                <button class="btn-ai-generate" data-section="bab2_3">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate dengan AI
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="card-loading" style="display:none;">
+                    <i class="fas fa-spinner fa-spin"></i> AI sedang menulis...
+                </div>
+                <textarea class="card-textarea" data-section="bab2_3" placeholder="Klik 'Generate dengan AI' untuk membuat Alat dan Bahan..."></textarea>
+            </div>
+        </div>
+
+        <!-- BAB III.1 -->
+        <div class="laporan-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-badge">8</span>
+                    <h3>BAB III.1 - Kesimpulan</h3>
+                </div>
+                <button class="btn-ai-generate" data-section="bab3_1">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate dengan AI
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="card-loading" style="display:none;">
+                    <i class="fas fa-spinner fa-spin"></i> AI sedang menulis...
+                </div>
+                <textarea class="card-textarea" data-section="bab3_1" placeholder="Klik 'Generate dengan AI' untuk membuat Kesimpulan..."></textarea>
+            </div>
+        </div>
+
+        <!-- BAB III.2 -->
+        <div class="laporan-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-badge">9</span>
+                    <h3>BAB III.2 - Saran</h3>
+                </div>
+                <button class="btn-ai-generate" data-section="bab3_2">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate dengan AI
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="card-loading" style="display:none;">
+                    <i class="fas fa-spinner fa-spin"></i> AI sedang menulis...
+                </div>
+                <textarea class="card-textarea" data-section="bab3_2" placeholder="Klik 'Generate dengan AI' untuk membuat Saran..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Bar -->
+    <div id="laporanExportBar" class="laporan-export-bar" style="display:none;">
+        <button id="btnExportWord" class="btn-main btn-export-word">
+            <i class="fas fa-file-word"></i> Export Word (DOCX)
+        </button>
+        <!-- <button id="btnExportPDF" class="btn-main btn-export-pdf" style="background:var(--gray-medium);color:var(--text-primary);">
+            <i class="fas fa-file-pdf"></i> Export PDF
+        </button> -->
+    </div>
+
+    </div> <!-- end laporanContent -->
+
+    <!-- Error toast -->
+    <div id="laporanToast" class="laporan-toast" style="display:none;"></div>
+</div>

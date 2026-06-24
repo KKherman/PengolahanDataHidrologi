@@ -46,6 +46,16 @@ function setupBasicEventListeners() {
         const navKualitasAir = document.getElementById('nav-kualitas-air');
         if (navKualitasAir) navKualitasAir.click();
     };
+
+    // Navigate to Laporan page
+    const btnBuatLaporan = document.getElementById('btnBuatLaporan');
+    if (btnBuatLaporan) {
+        btnBuatLaporan.addEventListener('click', () => {
+            if (typeof window.loadPage === 'function') {
+                window.loadPage('laporan-uji-sampel');
+            }
+        });
+    }
     
     const btnGoToInput = document.getElementById('btnGoToInput');
     if (btnGoToInput) btnGoToInput.addEventListener('click', navToInput);

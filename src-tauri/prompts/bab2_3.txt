@@ -1,0 +1,1 @@
+BAB II.3 Alat dan Bahan. Buat uraian alat dan bahan yang digunakan dalam pengambilan sampel dan pengujian kualitas air TA {{tahun}} periode {{bulan}} putaran ke-{{putaran}} di Unit HKA -- BWS Sulawesi IV Kendari. Gunakan bahasa Indonesia formal.

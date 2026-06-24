@@ -1,0 +1,1 @@
+Buat kata pengantar untuk Laporan Hasil Uji Lab Kualitas Air bulan {{bulan}} TA {{tahun}} putaran ke-{{putaran}}, Unit HKA, BWS Sulawesi IV Kendari. Gunakan bahasa Indonesia formal resmi.

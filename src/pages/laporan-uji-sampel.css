@@ -1,0 +1,355 @@
+/* ============================================
+   LAPORAN UJI SAMPEL KUALITAS AIR
+   ============================================ */
+
+#pg-laporan-uji-sampel {
+    padding: 20px 30px;
+}
+
+#laporanHeader {
+    margin-bottom: 24px;
+}
+
+#laporanHeader h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+}
+
+/* API Key Banner */
+.api-key-banner {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    margin-bottom: 20px;
+    background: var(--card-bg);
+    border: 2px solid #eab308;
+    border-radius: 12px;
+}
+
+.api-key-banner-content {
+    text-align: center;
+    max-width: 500px;
+}
+
+.api-key-banner-content i {
+    font-size: 48px;
+    color: #eab308;
+    margin-bottom: 12px;
+}
+
+.api-key-banner-content h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: var(--text-primary);
+}
+
+.api-key-banner-content p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+}
+
+.api-key-banner-content a {
+    color: #3b82f6;
+    text-decoration: underline;
+}
+
+.api-key-input-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.api-key-input-group input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-color);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: monospace;
+}
+
+.api-key-input-group input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.api-key-status {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 4px 0 0 0;
+}
+
+.api-key-status.success { color: #22c55e; }
+.api-key-status.error { color: #ef4444; }
+
+/* Selector Panel */
+.laporan-selector {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.selector-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.selector-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.selector-group select {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-color);
+    color: var(--text-primary);
+    font-size: 14px;
+    min-width: 140px;
+}
+
+.selector-group select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.selector-action {
+    justify-content: flex-end;
+}
+
+/* Info Bar */
+.laporan-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #eaf4fd;
+    border: 1px solid #b8d6f0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: #1a5276;
+    font-size: 14px;
+}
+
+body.dark .laporan-info-bar {
+    background: #1a2a3a;
+    border-color: #2a4a6a;
+    color: #8abce6;
+}
+
+.laporan-info-bar i {
+    font-size: 18px;
+}
+
+/* Section Cards */
+.laporan-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.laporan-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.laporan-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-color);
+}
+
+.laporan-card .card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.laporan-card .card-title h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.card-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.btn-ai-generate {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-ai-generate:hover {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.btn-ai-generate:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.laporan-card .card-body {
+    padding: 16px 20px;
+}
+
+.card-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    color: #166534;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+body.dark .card-loading {
+    background: #0a2a1a;
+    border-color: #1a4a2a;
+    color: #6ae68a;
+}
+
+.card-loading i {
+    font-size: 18px;
+}
+
+.card-textarea {
+    width: 100%;
+    min-height: 180px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-color);
+    color: var(--text-primary);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    line-height: 1.5;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.card-textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Export Bar */
+.laporan-export-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.btn-export-word {
+    background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+}
+
+.btn-export-word:hover {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+}
+
+/* Toast */
+.laporan-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    animation: slideInRight 0.3s ease;
+    max-width: 400px;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.laporan-toast.toast-success {
+    background: #166534;
+    color: #fff;
+    border: 1px solid #22c55e;
+}
+
+.laporan-toast.toast-error {
+    background: #7f1d1d;
+    color: #fff;
+    border: 1px solid #ef4444;
+}
+
+.laporan-toast.toast-warning {
+    background: #78350f;
+    color: #fff;
+    border: 1px solid #f59e0b;
+}
+
+.laporan-toast.toast-info {
+    background: #1e3a5f;
+    color: #fff;
+    border: 1px solid #3b82f6;
+}

@@ -1,0 +1,1 @@
+BAB I.2 Maksud dan Tujuan. Buat maksud dan tujuan pemantauan kualitas air TA {{tahun}} periode {{bulan}} putaran ke-{{putaran}} di Unit HKA -- BWS Sulawesi IV Kendari. Jelaskan tujuan evaluasi status mutu air menggunakan metode Indeks Pencemaran. Gunakan bahasa Indonesia formal.

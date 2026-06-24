@@ -35,7 +35,13 @@ pub fn run() {
             commands::kualitas_air::get_all_kualitas_air,
             commands::kualitas_air::delete_kualitas_air,
             commands::kualitas_air::export_kualitas_air_csv,
-            commands::kualitas_air::export_excel_sihka
+            commands::kualitas_air::export_excel_sihka,
+            commands::kualitas_air::get_tahun_options,
+            commands::kualitas_air::get_data_for_laporan,
+            commands::kualitas_air::generate_ai_content,
+            commands::kualitas_air::export_laporan_word,
+            commands::kualitas_air::check_api_key,
+            commands::kualitas_air::save_api_key
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

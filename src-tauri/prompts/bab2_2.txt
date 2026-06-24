@@ -1,0 +1,1 @@
+BAB II.2 Parameter yang Diuji. Buat daftar dan penjelasan parameter kualitas air yang diuji meliputi parameter fisika (suhu, TDS, TSS, kekeruhan), kimia (pH, DO, BOD, COD, logam berat), dan mikrobiologi (Total Coliform) pada TA {{tahun}} periode {{bulan}}. Gunakan bahasa Indonesia formal.

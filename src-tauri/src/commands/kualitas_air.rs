@@ -1,8 +1,12 @@
 use tauri::{State, command, AppHandle}; 
 use sqlx::SqlitePool;
 use crate::models::kualitas_air::KualitasAirRecord;
-use crate::services;
+use crate::services::{self, gemini_service, laporan_service};
+use crate::services::laporan_service::ReportSections;
 use tauri_plugin_dialog::DialogExt;
+use std::fs;
+use std::path::PathBuf;
+use tauri::Manager;
 
 // --- COMMAND 1: SIMPAN DATA (DENGAN DEBUGGING LENGKAP) ---
 #[command]
@@ -269,4 +273,121 @@ pub async fn export_excel_sihka(
             Err("Export dibatalkan pengguna".to_string())
         }
     }
+}
+
+// --- COMMAND 8: GET TAHUN OPTIONS ---
+#[command]
+pub async fn get_tahun_options(
+    pool: State<'_, SqlitePool>,
+) -> Result<Vec<i32>, String> {
+    let sql = "SELECT DISTINCT tahun FROM kualitas_air WHERE tahun IS NOT NULL ORDER BY tahun DESC";
+    let rows: Vec<(i32,)> = sqlx::query_as(sql)
+        .fetch_all(pool.inner())
+        .await
+        .map_err(|e| format!("Gagal mengambil tahun: {}", e))?;
+    Ok(rows.into_iter().map(|r| r.0).collect())
+}
+
+// --- COMMAND 9: GET DATA FOR LAPORAN (filter by tahun) ---
+#[command]
+pub async fn get_data_for_laporan(
+    pool: State<'_, SqlitePool>,
+    tahun: i32,
+    bulan: String,
+    putaran: i32,
+) -> Result<Vec<KualitasAirRecord>, String> {
+    println!("📊 [LAPORAN] Mengambil data untuk tahun={}, bulan={}, putaran={}", tahun, bulan, putaran);
+    let sql = "SELECT * FROM kualitas_air WHERE tahun = ? ORDER BY nama_pos ASC";
+    let rows = sqlx::query_as::<_, KualitasAirRecord>(sql)
+        .bind(tahun)
+        .fetch_all(pool.inner())
+        .await
+        .map_err(|e| format!("Gagal mengambil data laporan: {}", e))?;
+    println!("📊 [LAPORAN] Ditemukan {} record", rows.len());
+    Ok(rows)
+}
+
+fn find_prompt_file(app: &AppHandle, section: &str) -> Result<String, String> {
+    let paths = vec![
+        PathBuf::from("src-tauri/prompts").join(&format!("{}.txt", section)),
+        PathBuf::from("../src-tauri/prompts").join(&format!("{}.txt", section)),
+        PathBuf::from("prompts").join(&format!("{}.txt", section)),
+        app.path().resource_dir().unwrap_or_default().join("prompts").join(&format!("{}.txt", section)),
+    ];
+
+    for p in &paths {
+        if p.exists() {
+            return fs::read_to_string(p).map_err(|e| format!("Gagal baca prompt: {}", e));
+        }
+    }
+
+    Err(format!("File prompt '{}' tidak ditemukan", section))
+}
+
+// --- COMMAND 10: GENERATE AI CONTENT ---
+#[command]
+pub async fn generate_ai_content(
+    app: AppHandle,
+    section: String,
+    tahun: i32,
+    bulan: String,
+    putaran: i32,
+    _data_records: Vec<KualitasAirRecord>,
+) -> Result<String, String> {
+    let prompt_content = find_prompt_file(&app, &section)?;
+
+    let full_prompt = prompt_content
+        .replace("{{tahun}}", &tahun.to_string())
+        .replace("{{bulan}}", &bulan)
+        .replace("{{putaran}}", &putaran.to_string());
+
+    println!("🤖 [AI] Mengirim prompt ke Gemini untuk section: {}", section);
+    let result = gemini_service::generate(&app, &full_prompt).await?;
+    println!("✅ [AI] Berhasil generate {} ({} chars)", section, result.len());
+    Ok(result)
+}
+
+// --- COMMAND 11: EXPORT LAPORAN WORD ---
+#[command]
+pub async fn export_laporan_word(
+    app: AppHandle,
+    sections: ReportSections,
+    tahun: i32,
+    bulan: String,
+    putaran: i32,
+    data_records: Vec<KualitasAirRecord>,
+) -> Result<String, String> {
+    let default_name = format!("Laporan_Uji_Sampel_KA_{}_{}_P{}.doc", tahun, bulan, putaran)
+        .replace(' ', "_");
+
+    let file_path = app.dialog()
+        .file()
+        .add_filter("Word Document", &["doc", "docx"])
+        .set_file_name(&default_name)
+        .blocking_save_file();
+
+    match file_path {
+        Some(path) => {
+            let path_str = path.to_string();
+            println!("📄 [EXPORT] Menyimpan laporan ke: {}", path_str);
+            laporan_service::export_to_word(&path_str, &sections, tahun, &bulan, putaran, &data_records)
+        },
+        None => Err("Export dibatalkan pengguna".to_string())
+    }
+}
+
+// --- COMMAND 12: CHECK API KEY STATUS ---
+#[command]
+pub async fn check_api_key(app: AppHandle) -> Result<bool, String> {
+    Ok(gemini_service::is_key_configured(&app))
+}
+
+// --- COMMAND 13: SAVE API KEY ---
+#[command]
+pub async fn save_api_key(app: AppHandle, key: String) -> Result<String, String> {
+    if key.trim().is_empty() {
+        return Err("API Key tidak boleh kosong".to_string());
+    }
+    gemini_service::save_api_key(&app, key.trim())?;
+    Ok("✅ API Key berhasil disimpan".to_string())
 }
